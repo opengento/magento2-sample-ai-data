@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="opengento" translate="label" sortOrder="2000">
+            <label>Opengento</label>
+        </tab>
+        <section id="opengento_sample_ai_data" translate="label" type="text" sortOrder="910" showInDefault="1" showInWebsite="1" showInStore="1">
+            <class>separator-top</class>
+            <label>Sample Data AI</label>
+            <tab>opengento</tab>
+            <resource>Opengento_SampleAiData::config</resource>
+            <group id="sample_ai_data" translate="label" type="text" sortOrder="120" showInDefault="1">
+                <label>Sample AI Settings</label>
+                <field id="api_key" translate="label comment" type="textarea" sortOrder="10" showInDefault="1" canRestore="1">
+                    <label>Api Key</label>
+                </field>
+                <field id="prompt" translate="label comment" type="textarea" sortOrder="10" showInDefault="1" canRestore="1">
+                    <label>Pompt</label>
+                    <comment><![CDATA['Create a list of demo products with these properties, separated values with "". Only write down values and no property names ' . PHP_EOL
+                        PHP_EOL
+                        'the following properties should be generated.' . PHP_EOL
+                        'Every resulting line should be in the order and sort provided below:' . PHP_EOL
+                        PHP_EOL
+                        'product count.' . PHP_EOL
+                        'product number code. should be 16 unique random alphanumeric.' . PHP_EOL
+                        'name of the product.' . PHP_EOL
+                        'description (about ' . $descriptionLength . ' characters).' . PHP_EOL
+                        'price value (no currency just number).' . PHP_EOL
+                        'EAN code.' . PHP_EOL
+                        'SEO description (max 100 characters).' . PHP_EOL
+                        PHP_EOL
+                        'Please only create this number of products: ' . $maxCount . PHP_EOL
+                        PHP_EOL
+                        'The industry of the products should be: ' . $keywords]]></comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
