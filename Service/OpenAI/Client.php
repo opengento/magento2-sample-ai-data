@@ -10,7 +10,7 @@ use Opengento\SampleAiData\Provider\Config;
 
 class Client
 {
-    private OpenAiClient $openAiClient;
+    private ?OpenAiClient $openAiClient;
 
     private ?string $apiKey = null;
 
@@ -30,6 +30,21 @@ class Client
         return $this->apiKey;
     }
 
+    private function getOpenAiClient(): OpenAiClient
+    {
+        if ($this->openAiClient === null) {
+            $apiKey = $this->getApiKey();
+
+            if (empty($apiKey)) {
+                throw new \Exception('No API Key found in the configuration. Please provide your key');
+            }
+
+            $this->openAiClient = OpenAI::client($apiKey);
+        }
+
+        return $this->openAiClient;
+    }
+
     /**
      * @param string $prompt
      * @return string
@@ -37,13 +52,7 @@ class Client
      */
     public function generateText(string $prompt): string
     {
-        $apiKey = $this->getApiKey();
-
-        if (empty($apiKey)) {
-            throw new \Exception('No API Key found in the configuration. Please provide your key');
-        }
-
-        $this->openAiClient = OpenAI::client($apiKey);
+        $this->openAiClient = $this->getOpenAiClient();
 
         $params = [
             'model' => "gpt-3.5-turbo-instruct", //@todo, let the user select what to use
@@ -79,5 +88,27 @@ class Client
         $choiceData = $choices[0];
 
         return trim($choiceData->text);
+    }
+
+    public function generateImage(string $prompt)
+    {
+        $this->openAiClient = $this->getOpenAiClient();
+
+        $params = [
+            'model' => 'dall-e-3',
+            'prompt' => $prompt,
+            'n' => 1,
+            'size' => '1024x1024',
+            'response_format' => 'url',
+        ];
+
+        $response = $this->openAiClient->images()->create($params);
+
+        $response->created; // 1589478378
+
+        foreach ($response->data as $data) {
+            $data->url; // 'https://oaidalleapiprodscus.blob.core.windows.net/private/...'
+            $data->b64_json; // null
+        }
     }
 }
