@@ -13,7 +13,7 @@ class ProductGenerator
         private readonly OpenAiClient $openAiClient
     ) {}
 
-    public function generate(string $keywords, int $maxCount, string $category, string $salesChannel, int $descriptionLength)
+    public function generate(string $keywords, int $maxCount = 10, string $category = null, string $salesChannel = null, int $descriptionLength = 10)
     {
         $prompt = 'Create a list of demo products with these properties, separated values with ";". Only write down values and no property names ' . PHP_EOL;
         $prompt .= PHP_EOL;

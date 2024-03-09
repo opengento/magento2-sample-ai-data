@@ -10,9 +10,9 @@
             <label>Sample Data AI</label>
             <tab>opengento</tab>
             <resource>Opengento_SampleAiData::config</resource>
-            <group id="sample_ai_data" translate="label" type="text" sortOrder="120" showInDefault="1">
+            <group id="general" translate="label" type="text" sortOrder="120" showInDefault="1">
                 <label>Sample AI Settings</label>
-                <field id="api_key" translate="label comment" type="textarea" sortOrder="10" showInDefault="1" canRestore="1">
+                <field id="api_key" translate="label comment" type="text" sortOrder="10" showInDefault="1" canRestore="1">
                     <label>Api Key</label>
                 </field>
                 <field id="prompt" translate="label comment" type="textarea" sortOrder="10" showInDefault="1" canRestore="1">

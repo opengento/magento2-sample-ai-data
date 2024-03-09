@@ -6,6 +6,7 @@ namespace Opengento\SampleAiData\Service\OpenAI;
 
 use Magento\Framework\Serialize\Serializer\Json as JsonSerializer;
 use OpenAI\Client as OpenAiClient;
+use Opengento\SampleAiData\Provider\Config;
 
 class Client
 {
@@ -17,17 +18,14 @@ class Client
      * @param string $apiKey
      */
     public function __construct(
-        private readonly JsonSerializer $jsonSerializer
+        private readonly JsonSerializer $jsonSerializer,
+        private readonly Config $config
     ) {}
 
     private function getApiKey(): string
     {
         if ($this->apiKey === null) {
-
-            //@todo : get the apikey with the config
-            //$this->apiKey = $this->config->getOpenAIApiKey();
-
-            $this->apiKey = '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';
+            $this->apiKey = $this->config->getApiKey();
         }
 
         return $this->apiKey;
@@ -59,6 +57,8 @@ class Client
         ];
 
         $response = $this->openAiClient->completions()->create($params);
+        var_dump($response);
+        die();
 
         /*
 
