@@ -27,7 +27,7 @@ class Client
             //@todo : get the apikey with the config
             //$this->apiKey = $this->config->getOpenAIApiKey();
 
-            $this->apiKey = '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';
+            $this->apiKey = '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';
         }
 
         return $this->apiKey;
@@ -59,8 +59,6 @@ class Client
         ];
 
         $response = $this->openAiClient->completions()->create($params);
-
-
 
         /*
 

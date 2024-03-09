@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+
+        <add id="Opengento_SampleAiData::generate" title="Generate Sample Data" translate="title" module="Opengento_SampleAiData" sortOrder="100" parent="Magento_Catalog::catalog" action="opengento/aisampledata/" resource="Magento_Catalog::catalog"/>
+    </menu>
+</config>
