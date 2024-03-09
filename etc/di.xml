@@ -4,8 +4,11 @@
     <type name="Magento\Framework\Console\CommandListInterface">
         <arguments>
             <argument name="commands" xsi:type="array">
-                <item name="flows_import_products" xsi:type="object">
-                    Opengento\SampleAiData\Console\Command\SampleAiDataDeployCommand
+                <item name="sample_ai_product_data" xsi:type="object">
+                    Opengento\SampleAiData\Console\Command\SampleAiProductDataDeployCommand
+                </item>
+                <item name="sample_ai_category_data" xsi:type="object">
+                    Opengento\SampleAiData\Console\Command\SampleAiCategoryDataDeployCommand
                 </item>
             </argument>
         </arguments>
