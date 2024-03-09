@@ -10,7 +10,7 @@ use Opengento\SampleAiData\Provider\Config;
 
 class Client
 {
-    private ?OpenAiClient $openAiClient;
+    private ?OpenAiClient $openAiClient = null;
 
     private ?string $apiKey = null;
 
@@ -47,10 +47,10 @@ class Client
 
     /**
      * @param string $prompt
-     * @return string
+     * @return array
      * @throws \Exception
      */
-    public function generateText(string $prompt): string
+    public function getResults(string $prompt): array
     {
         $this->openAiClient = $this->getOpenAiClient();
 
@@ -87,15 +87,15 @@ class Client
 
         $choiceData = $choices[0];
 
-        return trim($choiceData->text);
+        return $this->toArray(trim($choiceData->text));
     }
 
-    public function generateImage(string $prompt)
+    public function generateImage(string $prompt): string
     {
         $this->openAiClient = $this->getOpenAiClient();
 
         $params = [
-            'model' => 'dall-e-3',
+            'model' => 'dall-e-2',
             'prompt' => $prompt,
             'n' => 1,
             'size' => '1024x1024',
@@ -104,11 +104,25 @@ class Client
 
         $response = $this->openAiClient->images()->create($params);
 
-        $response->created; // 1589478378
-
-        foreach ($response->data as $data) {
-            $data->url; // 'https://oaidalleapiprodscus.blob.core.windows.net/private/...'
-            $data->b64_json; // null
+        if (!is_array($response->data) || count($response->data) <= 0) {
+            return '';
         }
+
+        if (!isset($response->data[0]->url)) {
+            return '';
+        }
+
+        $imageData = $response->data[0];
+
+        return trim($imageData->url);
+    }
+
+    private function toArray(string $string): array
+    {
+        $result = [];
+        foreach (explode(PHP_EOL, $string) as $k => $line) {
+            $result[$k] = explode(';', $line);
+        }
+        return $result;
     }
 }
