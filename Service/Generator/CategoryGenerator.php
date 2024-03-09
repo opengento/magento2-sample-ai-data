@@ -13,6 +13,7 @@ use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\StateException;
 use Opengento\SampleAiData\Helper\OpenAiRequest;
+use Opengento\SampleAiData\Service\OpenAI\Client;
 
 class CategoryGenerator
 {
@@ -24,7 +25,7 @@ class CategoryGenerator
     ];
 
     public function __construct(
-        private readonly OpenAiRequest $openAiRequest,
+        private readonly Client $openAiClient,
         private readonly CategoryInterfaceFactory $categoryFactory,
         private readonly CategoryRepositoryInterface $categoryRepository,
         private readonly State $state,
@@ -51,7 +52,7 @@ class CategoryGenerator
         $prompt .= PHP_EOL;
         $prompt .= 'The industry of the categories should be: ' . $keywords;
 
-        $categories = $this->openAiRequest->send($prompt);
+        $categories = $this->openAiClient->getResults($prompt);
 
         foreach ($categories as $category) {
             $this->createCategories($category);

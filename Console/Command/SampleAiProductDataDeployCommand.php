@@ -9,6 +9,8 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Magento\Catalog\Model\ResourceModel\Category\Collection;
+use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory as CategoryCollectionFactory;
 
 class SampleAiProductDataDeployCommand extends Command
 {
@@ -18,10 +20,12 @@ class SampleAiProductDataDeployCommand extends Command
     const CATEGORY = 'category';
     const DESCRIPTION_LENGTH = 'description-length';
 
+    private const WITH_CATEGORIES_OPTION = 'with-categories';
+
     public function __construct(
-        private readonly ProductGenerator $productGenerator
-    )
-    {
+        private readonly ProductGenerator $productGenerator,
+        private readonly CategoryCollectionFactory $categoryCollectionFactory
+    ) {
         parent::__construct();
     }
 
@@ -51,6 +55,13 @@ class SampleAiProductDataDeployCommand extends Command
                         InputOption::VALUE_OPTIONAL,
                         'Maximum length of product description',
                         100
+                    ),
+                    new InputOption(
+                        self::WITH_CATEGORIES_OPTION,
+                        null,
+                        InputOption::VALUE_OPTIONAL,
+                        'Create products for existing categories',
+                        false
                     )
                 ]
             );
@@ -63,7 +74,25 @@ class SampleAiProductDataDeployCommand extends Command
         $maxProducts = $input->getArgument(self::MAX_PRODUCTS);
         $category = $input->getArgument(self::CATEGORY);
         $descriptionLength = $input->getOption(self::DESCRIPTION_LENGTH);
-        $this->productGenerator->generate($keyword, $maxProducts, $category, $descriptionLength);
+        $withCategories = $input->hasOption(self::WITH_CATEGORIES_OPTION);
+
+        if ($withCategories) {
+            $collection = $this->categoryCollectionFactory->create();
+
+            foreach ($collection as $category) {
+                $this->productGenerator->generate($keyword, $maxProducts, $descriptionLength, $category);
+            }
+
+        } else {
+            $this->productGenerator->generate($keyword, $maxProducts, $descriptionLength);
+        }
+
+
+
+
+
+
+
         return Cli::RETURN_SUCCESS;
     }
 }

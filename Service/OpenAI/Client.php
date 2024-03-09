@@ -47,10 +47,10 @@ class Client
 
     /**
      * @param string $prompt
-     * @return string
+     * @return array
      * @throws \Exception
      */
-    public function generateText(string $prompt): string
+    public function getResults(string $prompt): array
     {
         $this->openAiClient = $this->getOpenAiClient();
 
@@ -87,7 +87,7 @@ class Client
 
         $choiceData = $choices[0];
 
-        return trim($choiceData->text);
+        return $this->toArray(trim($choiceData->text));
     }
 
     public function generateImage(string $prompt): string
@@ -115,5 +115,14 @@ class Client
         $imageData = $response->data[0];
 
         return trim($imageData->url);
+    }
+
+    private function toArray(string $string): array
+    {
+        $result = [];
+        foreach (explode(PHP_EOL, $string) as $k => $line) {
+            $result[$k] = explode(';', $line);
+        }
+        return $result;
     }
 }
