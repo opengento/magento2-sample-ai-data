@@ -16,6 +16,7 @@ class SampleAiCategoryDataDeployCommand extends Command
     const KEYWORD = 'prompt';
     const MAX_CATEGORIES = 'max-categories';
     const DESCRIPTION_LENGTH = 'description-length';
+    const MAX_SUBCATEGORY_LEVEL = 'MAX_SUBCATEGORY_LEVEL';
 
     public function __construct(
         private readonly CategoryGenerator $productGenerator
@@ -45,6 +46,13 @@ class SampleAiCategoryDataDeployCommand extends Command
                         InputOption::VALUE_OPTIONAL,
                         'Maximum length of product description',
                         25
+                    ),
+                    new InputOption(
+                        self::MAX_SUBCATEGORY_LEVEL,
+                        null,
+                        InputOption::VALUE_OPTIONAL,
+                        'Max Sub-Category Level to generate for each main categories',
+                        25
                     )
             ]
         );
@@ -56,7 +64,8 @@ class SampleAiCategoryDataDeployCommand extends Command
         $prompt = $input->getArgument(self::KEYWORD);
         $maxProducts = $input->getArgument(self::MAX_CATEGORIES);
         $descriptionLength = $input->getOption(self::DESCRIPTION_LENGTH);
-        $this->productGenerator->generate($prompt, $maxProducts, $descriptionLength);
+        $maxSubcategoryLevel = $input->getOption(self::MAX_SUBCATEGORY_LEVEL);
+        $this->productGenerator->generate($prompt, $maxProducts, $descriptionLength, $maxSubcategoryLevel);
         return Cli::RETURN_SUCCESS;
     }
 }
