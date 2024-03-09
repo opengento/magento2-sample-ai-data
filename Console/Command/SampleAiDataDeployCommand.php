@@ -3,6 +3,7 @@
 namespace Opengento\SampleAiData\Console\Command;
 
 use Magento\Framework\Console\Cli;
+use Opengento\SampleAiData\Service\Generator\ProductGenerator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,7 +18,7 @@ class SampleAiDataDeployCommand extends Command
     const DESCRIPTION_LENGTH = 'description-length';
 
     public function __construct(
-        protected \Opengento\SampleAiData\Model\ProductGeneration $productGeneration
+        private readonly ProductGenerator $productGenerator
     )
     {
         parent::__construct();
@@ -61,7 +62,7 @@ class SampleAiDataDeployCommand extends Command
         $maxProducts = $input->getArgument(self::MAX_PRODUCTS);
         $category = $input->getArgument(self::CATEGORY);
         $descriptionLength = $input->getOption(self::DESCRIPTION_LENGTH);
-        $this->productGeneration->generate($prompt, $maxProducts, $category, $descriptionLength);
+        $this->productGenerator->generate($prompt, $maxProducts, $category, $descriptionLength);
         return Cli::RETURN_SUCCESS;
     }
 }
