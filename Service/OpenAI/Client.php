@@ -2,24 +2,23 @@
 
 declare(strict_types=1);
 
+namespace Opengento\SampleAiData\Service\OpenAI;
+
+use Magento\Framework\Serialize\Serializer\Json as JsonSerializer;
+use OpenAI\Client as OpenAiClient;
+
 class Client
 {
-    /**
-     * @var OpenAi
-     */
-    private $openAi;
+    private OpenAiClient $openAiClient;
 
-    private $apiKey = null;
-
+    private ?string $apiKey = null;
 
     /**
      * @param string $apiKey
      */
     public function __construct(
-        OpenAi
-    ) {
-
-    }
+        private readonly JsonSerializer $jsonSerializer
+    ) {}
 
     private function getApiKey(): string
     {
@@ -28,7 +27,7 @@ class Client
             //@todo : get the apikey with the config
             //$this->apiKey = $this->config->getOpenAIApiKey();
 
-            $this->apiKey = '';
+            $this->apiKey = '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';
         }
 
         return $this->apiKey;
@@ -47,7 +46,7 @@ class Client
             throw new \Exception('No API Key found in the configuration. Please provide your key');
         }
 
-        $this->openAi = OpenAI::client($apiKey);
+        $this->openAiClient = \OpenAI::client($apiKey);
 
         $params = [
             'model' => "gpt-3.5-turbo-instruct", //@todo, let the user select what to use
@@ -59,10 +58,25 @@ class Client
             'presence_penalty' => 0.0,
         ];
 
-        $response = $this->openAi->completions()->create($params);
+        $response = $this->openAiClient->completions()->create($params);
 
 
-        $json = json_decode($complete, true, 512, JSON_THROW_ON_ERROR);
+
+        /*
+
+        $response->id; // 'cmpl-uqkvlQyYK7bGYrRHQ0eXlWi7'
+        $response->object; // 'text_completion'
+        $response->created; // 1589478378
+        $response->model; // 'gpt-3.5-turbo-instruct'
+
+        foreach ($response->choices as $result) {
+            $result->text; // '\n\nThis is a test'
+            $result->index; // 0
+            $result->logprobs; // null
+            $result->finishReason; // 'length' or null
+        }
+
+         */
 
         if (!is_array($json)) {
             return new Choice('');
