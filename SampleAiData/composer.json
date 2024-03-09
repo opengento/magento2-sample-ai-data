@@ -1,0 +1,29 @@
+{
+    "name": "opengento/module-sample-ai-data",
+    "description": "Magento module responsible for installing data using AI",
+    "type": "magento2-module",
+    "license": [
+        "MIT"
+    ],
+    "authors": [
+        {
+            "name": "Opengento Team",
+            "email": "opengento@gmail.com",
+            "homepage": "https://opengento.fr/",
+            "role": "lead"
+        }
+    ],
+    "version": "1.0.0",
+    "require": {
+        "php": "^7.4||^8.0"
+    },
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Opengento\\SampleAiData\\": ""
+        }
+    }
+}
+
