@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Opengento\SampleAiData\Service\OpenAI;
 
-use Magento\Framework\Serialize\Serializer\Json as JsonSerializer;
+use OpenAI;
 use OpenAI\Client as OpenAiClient;
 use Opengento\SampleAiData\Provider\Config;
 
@@ -15,10 +15,9 @@ class Client
     private ?string $apiKey = null;
 
     /**
-     * @param string $apiKey
+     * @param Config $config
      */
     public function __construct(
-        private readonly JsonSerializer $jsonSerializer,
         private readonly Config $config
     ) {}
 
@@ -33,10 +32,10 @@ class Client
 
     /**
      * @param string $prompt
-     * @throws \JsonException
-     * @return
+     * @return string
+     * @throws \Exception
      */
-    public function generateText(string $prompt)
+    public function generateText(string $prompt): string
     {
         $apiKey = $this->getApiKey();
 
@@ -44,7 +43,7 @@ class Client
             throw new \Exception('No API Key found in the configuration. Please provide your key');
         }
 
-        $this->openAiClient = \OpenAI::client($apiKey);
+        $this->openAiClient = OpenAI::client($apiKey);
 
         $params = [
             'model' => "gpt-3.5-turbo-instruct", //@todo, let the user select what to use
@@ -57,53 +56,28 @@ class Client
         ];
 
         $response = $this->openAiClient->completions()->create($params);
-        var_dump($response);
-        die();
 
-        /*
-
-        $response->id; // 'cmpl-uqkvlQyYK7bGYrRHQ0eXlWi7'
-        $response->object; // 'text_completion'
-        $response->created; // 1589478378
-        $response->model; // 'gpt-3.5-turbo-instruct'
-
-        foreach ($response->choices as $result) {
-            $result->text; // '\n\nThis is a test'
-            $result->index; // 0
-            $result->logprobs; // null
-            $result->finishReason; // 'length' or null
-        }
-
-         */
-
-        if (!is_array($json)) {
-            return new Choice('');
-        }
-
-        if (isset($json['error'])) {
-            $msg = 'OpenAI Error: ' . $json['error']['message'] . '[' . $json['error']['code'] . ']';
+        if (isset($response->error)) {
+            $msg = 'OpenAI Error: ' . $response->error['message'] . '[' . $response->error['code'] . ']';
             throw new \Exception($msg);
         }
 
-        if (!isset($json['choices'])) {
+        if (!isset($response->choices)) {
             throw new \Exception('No choices found in OpenAI response.');
         }
 
-        $choices = $json['choices'];
+        $choices = $response->choices;
 
         if (!is_array($choices) || count($choices) <= 0) {
-            return new Choice('');
+            return '';
         }
 
-        if (!isset($choices[0]['text'])) {
-            return new Choice('');
+        if (!isset($choices[0]->text)) {
+            return '';
         }
 
         $choiceData = $choices[0];
 
-        $text = trim($choiceData['text']);
-
-        return new Choice($text);
+        return trim($choiceData->text);
     }
-
 }
